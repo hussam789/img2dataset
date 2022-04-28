@@ -51,6 +51,7 @@ def download(
     subjob_size: int = 1000,
     retries: int = 0,
     disable_all_reencoding: bool = False,
+    dynamic_url:str = "",
 ):
     """Download is the main entry point of img2dataset, it uses multiple processes and download multiple files"""
     config_parameters = dict(locals())
@@ -109,6 +110,7 @@ def download(
         number_sample_per_shard,
         start_shard_id,
         tmp_path,
+        dynamic_url,
     )
 
     if output_format == "webdataset":
