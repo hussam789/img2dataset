@@ -22,6 +22,7 @@ class Reader:
     - save_additional_columns: the list of additional columns to save
     - number_sample_per_shard: the number of samples per shard
     - start_shard_id: the id of the first shard
+    - dynamic_url: image url parameters example: &fm=jpg&h=224&fit=max
     """
 
     def __init__(
@@ -34,6 +35,7 @@ class Reader:
         number_sample_per_shard,
         start_shard_id,
         tmp_path,
+        dynamic_url,
     ) -> None:
         self.input_format = input_format
         self.url_col = url_col
@@ -41,6 +43,7 @@ class Reader:
         self.save_additional_columns = save_additional_columns
         self.number_sample_per_shard = number_sample_per_shard
         self.start_shard_id = start_shard_id
+        self.dynamic_url = dynamic_url
 
         fs, url_path = fsspec.core.url_to_fs(url_list)
         self.fs = fs
@@ -79,7 +82,7 @@ class Reader:
                 df = csv_pq.read_csv(file, parse_options=csv_pq.ParseOptions(delimiter="\t"))
         elif self.input_format == "parquet":
             with self.fs.open(input_file, mode="rb") as file:
-                columns_to_read = [self.url_col]
+                columns_to_read = [self.url_col.join(self.dynamic_url)]
                 if self.caption_col is not None:
                     columns_to_read += [self.caption_col]
                 if self.save_additional_columns is not None:
